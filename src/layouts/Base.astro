@@ -1,0 +1,119 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+}
+
+const {
+  title = 'ODCS Validator — Validate Open Data Contract Standard Online',
+  description = 'Free online validator for ODCS (Open Data Contract Standard) v3.1.0. Paste your YAML or JSON data contract and get instant validation feedback with detailed error messages.',
+  canonical = 'https://odcs-validator.com/',
+} = Astro.props;
+
+const webAppJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'ODCS Validator',
+  url: 'https://odcs-validator.com',
+  description,
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Web Browser',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Validate ODCS YAML data contracts',
+    'Validate ODCS JSON data contracts',
+    'Support for ODCS v3.1.0, v3.0.2, v3.0.0, v2.2.2',
+    'Instant error highlighting with field paths',
+    'Multiple example contracts to try',
+  ],
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is the Open Data Contract Standard (ODCS)?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ODCS is an open specification maintained by the Bitol / LF AI & Data Foundation that defines how to describe a data contract in YAML or JSON. It covers schema, data quality, SLA, team, roles, pricing, and server infrastructure in a single machine-readable file.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What ODCS versions does this validator support?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'This validator supports ODCS v3.1.0 (latest), v3.0.2, v3.0.0, and v2.2.2. The correct schema is automatically selected based on the apiVersion field in your contract.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I validate both YAML and JSON ODCS contracts?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. The validator auto-detects whether your input is YAML or JSON and parses it accordingly. YAML is the conventional format for ODCS contracts but JSON is equally valid.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What are the required fields in an ODCS contract?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Every ODCS v3.1.0 contract must include: apiVersion (e.g. v3.1.0), kind (must be DataContract), id (unique identifier), version (contract semver), and status (e.g. active).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Why does my contract fail validation even though the YAML looks correct?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'ODCS v3.1.0 uses strict JSON Schema validation — additionalProperties is false, so unknown fields are rejected. Move any non-standard fields into a customProperties array. Also check that apiVersion is set to a supported value like v3.1.0.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is my contract data sent to a server?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'No. All validation runs entirely in your browser using the bundled JSON Schema. Your contract never leaves your machine.',
+      },
+    },
+  ],
+};
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="ODCS Validator" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(webAppJsonLd)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
