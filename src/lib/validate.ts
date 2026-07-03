@@ -1,4 +1,7 @@
-import Ajv from 'ajv';
+// Ajv2019 is the pre-configured class for JSON Schema draft 2019-09.
+// The ODCS JSON Schemas declare "$schema": "https://json-schema.org/draft/2019-09/schema"
+// and the default Ajv class does not load that meta-schema, causing a runtime error.
+import Ajv2019 from 'ajv/dist/2019';
 import addFormats from 'ajv-formats';
 
 import schemaV310 from '../schemas/v3.1.0.json';
@@ -57,12 +60,14 @@ function resolveSchema(apiVersion: string | undefined): {
   };
 }
 
-// Build one AJV instance per schema (cached via module-level map).
-const ajvCache = new Map<string, { validate: ReturnType<Ajv['compile']> }>();
+// Build one Ajv2019 instance per schema version (cached).
+const ajvCache = new Map<string, { validate: ReturnType<Ajv2019['compile']> }>();
 
 function getValidator(version: string, schema: unknown) {
   if (ajvCache.has(version)) return ajvCache.get(version)!;
-  const ajv = new Ajv({ allErrors: true, strict: false });
+  // validateSchema: false — do not try to fetch/resolve the "$schema" meta-schema URI
+  // at runtime. The ODCS schemas come from the official repo and are trusted.
+  const ajv = new Ajv2019({ allErrors: true, strict: false, validateSchema: false });
   addFormats(ajv);
   const validate = ajv.compile(schema as object);
   const entry = { validate };
