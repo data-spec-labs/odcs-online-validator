@@ -202,12 +202,21 @@ export default function Validator() {
     textareaRef.current?.focus();
   };
 
+  const handleClear = () => {
+    setInput('');
+    setCopied(false);
+    setUiState({ kind: 'empty' });
+    textareaRef.current?.focus();
+  };
+
+  const PANEL_HEIGHT = 'h-72 md:h-full md:min-h-[12rem]';
+
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="w-full flex-1 flex flex-col min-h-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 flex-1 min-h-0 md:items-stretch">
         {/* ── Left: Input Panel ── */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between flex-wrap gap-2">
+        <div className="flex flex-col gap-2 min-h-0 md:h-full">
+          <div className="flex items-center justify-between flex-wrap gap-2 shrink-0">
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold text-slate-700">Your Contract</span>
               {uiState.kind !== 'empty' && uiState.kind !== 'parsing-error' || uiState.kind === 'parsing-error' ? (
@@ -226,30 +235,39 @@ export default function Validator() {
               >
                 {copied ? '✓ Copied' : 'Copy'}
               </button>
+              <button
+                onClick={handleClear}
+                disabled={!input}
+                className="text-xs px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                Clear
+              </button>
             </div>
           </div>
 
-          <div className="relative flex-1">
+          <div className="relative flex-1 min-h-0">
             <textarea
               ref={textareaRef}
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={`Paste your ODCS contract here…\n\nExample:\napiVersion: v3.1.0\nkind: DataContract\nid: your-uuid-here\nversion: 1.0.0\nstatus: active`}
-              className="w-full h-96 md:h-[520px] p-4 font-mono text-sm bg-slate-900 text-slate-100 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-y placeholder:text-slate-500 leading-relaxed"
+              placeholder={`Paste your ODCS contract here…\n\napiVersion: v3.1.0\nkind: DataContract\nid: your-uuid\nversion: 1.0.0\nstatus: active`}
+              className={`w-full ${PANEL_HEIGHT} p-3 md:p-4 font-mono text-sm bg-slate-900 text-slate-100 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none md:resize-y placeholder:text-slate-500 leading-relaxed`}
               spellCheck={false}
               autoCorrect="off"
               autoCapitalize="off"
             />
           </div>
-          <p className="text-xs text-slate-400">
-            Auto-validates as you type · Cmd/Ctrl+Enter to validate immediately
+          <p className="text-[11px] text-slate-400 shrink-0 hidden md:block">
+            Auto-validates · Cmd/Ctrl+Enter
           </p>
         </div>
 
         {/* ── Right: Results Panel ── */}
-        <div className="flex flex-col gap-3">
-          <span className="text-sm font-semibold text-slate-700">Validation Results</span>
-          <ResultsPanel state={uiState} />
+        <div className="flex flex-col gap-2 min-h-0 md:h-full">
+          <span className="text-sm font-semibold text-slate-700 shrink-0">Validation Results</span>
+          <div className={`flex-1 min-h-0 ${PANEL_HEIGHT}`}>
+            <ResultsPanel state={uiState} />
+          </div>
         </div>
       </div>
     </div>
@@ -305,9 +323,11 @@ function ExamplesDropdown({ onSelect }: { onSelect: (val: string) => void }) {
 }
 
 function ResultsPanel({ state }: { state: UIState }) {
+  const panelClass = 'h-full min-h-[12rem] rounded-xl overflow-auto';
+
   if (state.kind === 'empty') {
     return (
-      <div className="h-96 md:h-[520px] rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400">
+      <div className={`${panelClass} border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400`}>
         <svg className="w-12 h-12 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
@@ -318,7 +338,7 @@ function ResultsPanel({ state }: { state: UIState }) {
 
   if (state.kind === 'parsing-error') {
     return (
-      <div className="h-96 md:h-[520px] rounded-xl border border-amber-200 bg-amber-50 overflow-auto p-5">
+      <div className={`${panelClass} border border-amber-200 bg-amber-50 p-5`}>
         <div className="flex items-start gap-3">
           <span className="text-amber-500 text-xl mt-0.5 shrink-0">⚠</span>
           <div>
@@ -333,11 +353,8 @@ function ResultsPanel({ state }: { state: UIState }) {
 
   if (state.kind === 'valid') {
     const { result } = state;
-    const contract = (() => {
-      try { return result as unknown as Record<string, unknown>; } catch { return {}; }
-    })();
     return (
-      <div className="h-96 md:h-[520px] rounded-xl border border-emerald-200 bg-emerald-50 overflow-auto p-5 flex flex-col gap-4">
+      <div className={`${panelClass} border border-emerald-200 bg-emerald-50 p-5 flex flex-col gap-4`}>
         {result.versionWarning && (
           <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
             <span className="text-amber-500 text-sm shrink-0">⚠</span>
@@ -362,7 +379,7 @@ function ResultsPanel({ state }: { state: UIState }) {
   // invalid
   const { result } = state;
   return (
-    <div className="h-96 md:h-[520px] rounded-xl border border-red-200 bg-red-50 overflow-auto flex flex-col">
+    <div className={`${panelClass} border border-red-200 bg-red-50 flex flex-col`}>
       {/* Banner */}
       <div className="sticky top-0 bg-red-50 border-b border-red-200 px-5 py-4 flex items-center gap-3">
         <span className="text-red-500 text-2xl shrink-0">✗</span>

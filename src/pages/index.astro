@@ -7,140 +7,36 @@ import '../styles/global.css';
 <Base>
   <!-- ── Header ────────────────────────────────────────────────────── -->
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <img src="/favicon.svg" alt="ODCS Validator" class="w-7 h-7 rounded-lg" width="28" height="28" />
-        <span class="font-bold text-slate-900 text-base">ODCS Validator</span>
+    <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10 py-4 lg:py-5 flex items-center min-h-[4rem] lg:min-h-[5rem]">
+      <div class="flex items-center gap-3.5 min-w-0">
+        <img src="/favicon.svg" alt="" class="w-8 h-8 rounded-lg shrink-0" width="32" height="32" />
+        <div class="min-w-0">
+          <h1 class="font-bold text-slate-900 text-base lg:text-lg leading-snug truncate">ODCS Validator</h1>
+          <p class="hidden lg:block text-sm text-slate-500 leading-snug mt-0.5 truncate">Paste YAML or JSON • In-browser • No data leaves your machine</p>
+        </div>
       </div>
-      <nav class="hidden sm:flex items-center gap-6 text-sm text-slate-600">
-        <a href="#validator" class="hover:text-indigo-600 transition-colors">Validator</a>
-        <a href="#required-fields" class="hover:text-indigo-600 transition-colors">Reference</a>
-        <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
-        <a href="https://bitol-io.github.io/open-data-contract-standard/v3.1.0/" target="_blank" rel="noopener" class="text-indigo-600 font-medium hover:text-indigo-700 transition-colors">
-          ODCS Docs ↗
-        </a>
-      </nav>
     </div>
   </header>
 
   <main class="bg-slate-50 min-h-screen">
 
-    <!-- ── Hero ─────────────────────────────────────────────────────── -->
-    <section class="bg-gradient-to-b from-white to-slate-50 border-b border-slate-200 py-14 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mx-auto text-center">
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-medium mb-5">
-          <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-          Free · In-browser · No data leaves your machine
-        </div>
-        <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          ODCS Validator
-        </h1>
-        <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          Validate Open Data Contract Standard contracts instantly. Paste your YAML or JSON data contract and see
-          exactly which fields pass or fail against the official ODCS JSON Schema.
-        </p>
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
-          {['v3.1.0', 'v3.0.2', 'v3.0.0', 'v2.2.2'].map((v) => (
-            <span class="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 font-mono text-xs">
-              {v}
-            </span>
-          ))}
-          <span class="px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
-            v3.1.0 latest
-          </span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── Validator Island ──────────────────────────────────────────── -->
-    <section id="validator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <Validator client:load />
-    </section>
-
-    <!-- ── Required fields reference ────────────────────────────────── -->
-    <section id="required-fields" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <h2 class="text-2xl font-bold text-slate-900 mb-2">ODCS v3.1.0 required fields</h2>
-      <p class="text-slate-500 mb-6 text-sm">
-        These five fields must be present in every ODCS v3.1.0 contract. Everything else is optional.
+    <!-- Mobile-only intro (desktop: tagline is in header) -->
+    <section class="lg:hidden px-4 sm:px-6 pt-5 pb-2">
+      <p class="text-sm text-slate-600 leading-snug">
+        Validate Open Data Contract Standard contracts instantly. Paste YAML or JSON below.
       </p>
-      <div class="overflow-x-auto rounded-xl border border-slate-200">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Field</th>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Type</th>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Allowed values / example</th>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Description</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-4 py-3 font-mono text-indigo-700 font-medium">apiVersion</td>
-              <td class="px-4 py-3 text-slate-600">string</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-600">v3.1.0</td>
-              <td class="px-4 py-3 text-slate-600">Version of the ODCS standard this contract follows.</td>
-            </tr>
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-4 py-3 font-mono text-indigo-700 font-medium">kind</td>
-              <td class="px-4 py-3 text-slate-600">string</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-600">DataContract</td>
-              <td class="px-4 py-3 text-slate-600">Must be exactly <code class="font-mono bg-slate-100 px-1 rounded text-xs">DataContract</code>.</td>
-            </tr>
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-4 py-3 font-mono text-indigo-700 font-medium">id</td>
-              <td class="px-4 py-3 text-slate-600">string</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-600">53581432-6c55-4ba2-a65f-72344a91553a</td>
-              <td class="px-4 py-3 text-slate-600">Unique identifier (UUID recommended) to avoid name collisions.</td>
-            </tr>
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-4 py-3 font-mono text-indigo-700 font-medium">version</td>
-              <td class="px-4 py-3 text-slate-600">string</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-600">1.0.0</td>
-              <td class="px-4 py-3 text-slate-600">The contract's own semver version (independent of the standard version).</td>
-            </tr>
-            <tr class="hover:bg-slate-50 transition-colors">
-              <td class="px-4 py-3 font-mono text-indigo-700 font-medium">status</td>
-              <td class="px-4 py-3 text-slate-600">string</td>
-              <td class="px-4 py-3 font-mono text-xs text-slate-600">active · draft · deprecated · retired</td>
-              <td class="px-4 py-3 text-slate-600">Lifecycle status of this contract.</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        {['v3.1.0', 'v3.0.2', 'v3.0.0', 'v2.2.2'].map((v) => (
+          <span class="px-2 py-0.5 rounded-full bg-white border border-slate-200 text-slate-600 font-mono text-[11px]">
+            {v}
+          </span>
+        ))}
       </div>
+    </section>
 
-      <!-- Key optional fields -->
-      <h3 class="text-lg font-bold text-slate-900 mt-10 mb-4">Commonly used optional fields</h3>
-      <div class="overflow-x-auto rounded-xl border border-slate-200">
-        <table class="w-full text-sm">
-          <thead class="bg-slate-50 border-b border-slate-200">
-            <tr>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Field</th>
-              <th class="text-left px-4 py-3 font-semibold text-slate-700">Description</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-slate-100">
-            {[
-              ['name', 'Human-readable contract name'],
-              ['domain', 'Logical data domain (e.g. finance, commerce)'],
-              ['tenant', 'Organisation or property the data belongs to'],
-              ['schema', 'Array of data objects (tables/topics) and their properties'],
-              ['servers', 'Physical locations: Postgres, BigQuery, Snowflake, Kafka, S3, …'],
-              ['slaProperties', 'Latency, retention, availability, frequency SLA entries'],
-              ['team', 'Named team object with member list (v3.1.0+)'],
-              ['roles', 'IAM roles with access levels and approver chains'],
-              ['support', 'Slack, email, Teams, or ticket support channels'],
-              ['price', 'Data product pricing (priceAmount, priceCurrency, priceUnit)'],
-              ['customProperties', 'Non-standard key/value extensions (required instead of unknown top-level fields)'],
-              ['contractCreatedTs', 'ISO 8601 UTC timestamp of contract creation'],
-            ].map(([field, desc]) => (
-              <tr class="hover:bg-slate-50 transition-colors">
-                <td class="px-4 py-3 font-mono text-indigo-700 text-xs">{field}</td>
-                <td class="px-4 py-3 text-slate-600">{desc}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <!-- ── Validator ─────────────────────────────────────────────────── -->
+    <section id="validator" class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-4 lg:py-3 lg:min-h-[calc(100dvh-5rem)] lg:flex lg:flex-col">
+      <Validator client:load />
     </section>
 
     <!-- ── Supported versions ────────────────────────────────────────── -->
@@ -246,24 +142,16 @@ import '../styles/global.css';
   </main>
 
   <!-- ── Footer ───────────────────────────────────────────────────── -->
-  <footer class="bg-white border-t border-slate-200 py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-      <div class="flex items-center gap-2">
-        <img src="/favicon.svg" alt="ODCS Validator" class="w-5 h-5 rounded" width="20" height="20" />
-        <span class="font-medium text-slate-700">ODCS Validator</span>
-      </div>
-      <p class="text-center">
-        Validates against the official
-        <a href="https://bitol-io.github.io/open-data-contract-standard/v3.1.0/" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">Open Data Contract Standard</a>
-        by <a href="https://bitol.io/" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">Bitol / LF AI &amp; Data Foundation</a>.
-        Licensed Apache 2.0.
-      </p>
-      <a href="https://github.com/bitol-io/open-data-contract-standard" target="_blank" rel="noopener" class="hover:text-slate-700 transition-colors flex items-center gap-1.5">
-        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
-        </svg>
-        ODCS on GitHub
-      </a>
+  <footer class="border-t border-slate-200 bg-white py-4 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 text-xs text-slate-500">
+      <span>© {new Date().getFullYear()} ODCS Validator</span>
+      <nav class="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+        <a href="https://bitol-io.github.io/open-data-contract-standard/v3.1.0/" target="_blank" rel="noopener" class="hover:text-indigo-600 transition-colors">ODCS Spec</a>
+        <span class="text-slate-300" aria-hidden="true">·</span>
+        <a href="https://github.com/data-spec-labs/odcs-online-validator" target="_blank" rel="noopener" class="hover:text-indigo-600 transition-colors">GitHub</a>
+        <span class="text-slate-300" aria-hidden="true">·</span>
+        <a href="https://github.com/data-spec-labs/odcs-online-validator/blob/main/LICENSE" target="_blank" rel="noopener" class="hover:text-indigo-600 transition-colors">Apache 2.0</a>
+      </nav>
     </div>
   </footer>
 </Base>
