@@ -1,6 +1,7 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { parseContract, extractApiVersion } from '../lib/parse';
+import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import { parseContract, extractApiVersion, detectFormat, needsPrettyPrint, prettyContract } from '../lib/parse';
 import { validateContract, type ValidationResult } from '../lib/validate';
+import ContractEditor, { type ContractEditorHandle } from './ContractEditor';
 
 // ── Example contracts ──────────────────────────────────────────────────────
 
@@ -151,7 +152,9 @@ export default function Validator() {
   const [uiState, setUiState] = useState<UIState>({ kind: 'empty' });
   const [copied, setCopied] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<ContractEditorHandle>(null);
+
+  const editorFormat = useMemo(() => detectFormat(input), [input]);
 
   const runValidation = useCallback((text: string) => {
     if (!text.trim()) {
@@ -163,6 +166,14 @@ export default function Validator() {
       setUiState({ kind: 'parsing-error', message: parseResult.error, format: parseResult.format });
       return;
     }
+
+    if (needsPrettyPrint(text, parseResult.data, parseResult.format)) {
+      const pretty = prettyContract(parseResult.data, parseResult.format);
+      if (pretty !== text) {
+        setInput(pretty);
+      }
+    }
+
     const apiVersion = extractApiVersion(parseResult.data);
     const result = validateContract(parseResult.data, apiVersion);
     setUiState(result.valid
@@ -199,21 +210,21 @@ export default function Validator() {
 
   const handleLoadExample = (value: string) => {
     setInput(value);
-    textareaRef.current?.focus();
+    editorRef.current?.focus();
   };
 
   const handleClear = () => {
     setInput('');
     setCopied(false);
     setUiState({ kind: 'empty' });
-    textareaRef.current?.focus();
+    editorRef.current?.focus();
   };
 
   const PANEL_HEIGHT = 'h-72 md:h-full md:min-h-[12rem]';
 
   return (
     <div className="w-full flex-1 flex flex-col min-h-0">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 flex-1 min-h-0 md:items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-3 md:gap-4 flex-1 min-h-0 md:items-stretch">
         {/* ── Left: Input Panel ── */}
         <div className="flex flex-col gap-2 min-h-0 md:h-full">
           <div className="flex items-center justify-between flex-wrap gap-2 shrink-0">
@@ -245,16 +256,14 @@ export default function Validator() {
             </div>
           </div>
 
-          <div className="relative flex-1 min-h-0">
-            <textarea
-              ref={textareaRef}
+          <div className={`relative flex-1 min-h-0 ${PANEL_HEIGHT}`}>
+            <ContractEditor
+              ref={editorRef}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={setInput}
+              format={editorFormat}
               placeholder={`Paste your ODCS contract here…\n\napiVersion: v3.1.0\nkind: DataContract\nid: your-uuid\nversion: 1.0.0\nstatus: active`}
-              className={`w-full ${PANEL_HEIGHT} p-3 md:p-4 font-mono text-sm bg-slate-900 text-slate-100 rounded-xl border border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none md:resize-y placeholder:text-slate-500 leading-relaxed`}
-              spellCheck={false}
-              autoCorrect="off"
-              autoCapitalize="off"
+              className="h-full"
             />
           </div>
           <p className="text-[11px] text-slate-400 shrink-0 hidden md:block">
@@ -327,11 +336,11 @@ function ResultsPanel({ state }: { state: UIState }) {
 
   if (state.kind === 'empty') {
     return (
-      <div className={`${panelClass} border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-3 text-slate-400`}>
-        <svg className="w-12 h-12 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div className={`${panelClass} border-2 border-dashed border-slate-300 bg-slate-100 flex flex-col items-center justify-center gap-3 text-slate-600`}>
+        <svg className="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <p className="text-sm text-center px-6">Paste an ODCS contract on the left to see validation results here.</p>
+        <p className="text-sm text-slate-700 text-center px-6">Paste an ODCS contract on the left to see validation results here.</p>
       </div>
     );
   }
