@@ -9,16 +9,11 @@ import '../styles/global.css';
   <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
       <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
-          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
+        <img src="/favicon.svg" alt="ODCS Validator" class="w-7 h-7 rounded-lg" width="28" height="28" />
         <span class="font-bold text-slate-900 text-base">ODCS Validator</span>
       </div>
       <nav class="hidden sm:flex items-center gap-6 text-sm text-slate-600">
         <a href="#validator" class="hover:text-indigo-600 transition-colors">Validator</a>
-        <a href="#what-is-odcs" class="hover:text-indigo-600 transition-colors">What is ODCS?</a>
         <a href="#required-fields" class="hover:text-indigo-600 transition-colors">Reference</a>
         <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
         <a href="https://bitol-io.github.io/open-data-contract-standard/v3.1.0/" target="_blank" rel="noopener" class="text-indigo-600 font-medium hover:text-indigo-700 transition-colors">
@@ -60,148 +55,6 @@ import '../styles/global.css';
     <!-- ── Validator Island ──────────────────────────────────────────── -->
     <section id="validator" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <Validator client:load />
-    </section>
-
-    <!-- ── How it works ─────────────────────────────────────────────── -->
-    <section class="bg-white border-y border-slate-200 py-14 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-2xl font-bold text-slate-900 text-center mb-10">How to validate your ODCS contract</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div class="text-center">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 font-bold text-xl flex items-center justify-center mx-auto mb-4">1</div>
-            <h3 class="font-semibold text-slate-800 mb-2">Paste or load your contract</h3>
-            <p class="text-sm text-slate-500">Paste a YAML or JSON ODCS data contract into the editor, or use the "Load example" dropdown to try one of the built-in samples.</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 font-bold text-xl flex items-center justify-center mx-auto mb-4">2</div>
-            <h3 class="font-semibold text-slate-800 mb-2">Instant auto-validation</h3>
-            <p class="text-sm text-slate-500">The validator automatically detects your format and <code class="font-mono text-xs bg-slate-100 px-1 rounded">apiVersion</code>, selects the matching ODCS JSON Schema, and runs validation as you type.</p>
-          </div>
-          <div class="text-center">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 font-bold text-xl flex items-center justify-center mx-auto mb-4">3</div>
-            <h3 class="font-semibold text-slate-800 mb-2">Review results</h3>
-            <p class="text-sm text-slate-500">A green banner means your contract is valid. Red errors list each failing field path, the violated rule, and a human-readable message.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── What is ODCS ──────────────────────────────────────────────── -->
-    <section id="what-is-odcs" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <h2 class="text-2xl font-bold text-slate-900 mb-4">What is the Open Data Contract Standard (ODCS)?</h2>
-      <div class="prose prose-slate max-w-none text-slate-600 leading-relaxed space-y-4">
-        <p>
-          The <strong>Open Data Contract Standard (ODCS)</strong> is an open specification maintained by
-          <a href="https://bitol.io/" target="_blank" rel="noopener" class="text-indigo-600 hover:underline">Bitol</a>
-          (LF AI &amp; Data Foundation) that defines how data producers and consumers formally agree on the structure,
-          quality, ownership, and operational expectations of a dataset. An ODCS contract is a machine-readable
-          YAML or JSON file that covers:
-        </p>
-        <ul class="list-disc list-inside space-y-1 text-slate-600">
-          <li><strong>Schema</strong> — logical and physical column definitions, data types, primary keys</li>
-          <li><strong>Data quality</strong> — null checks, row counts, duplicate rules, custom SQL checks</li>
-          <li><strong>SLA</strong> — latency, availability, retention, update frequency</li>
-          <li><strong>Team &amp; Roles</strong> — owners, stewards, IAM access roles</li>
-          <li><strong>Infrastructure</strong> — 30+ server types (Snowflake, BigQuery, Kafka, S3, Postgres, …)</li>
-          <li><strong>Pricing</strong> — subscription cost per unit for data marketplace use cases</li>
-          <li><strong>Support channels</strong> — Slack, Teams, email, ticketing</li>
-        </ul>
-        <p>
-          ODCS is platform-agnostic and supported natively by tools like the Data Contract CLI,
-          Databricks Ontos, IBM watsonx, Witboost, and many more. The current version is
-          <strong>v3.1.0</strong>, released December 2025. Starting with v3.1.0, the JSON Schema enforces
-          strict validation — unknown fields are rejected, encouraging use of
-          <code class="font-mono text-xs bg-slate-100 px-1 rounded">customProperties</code> for extensions.
-        </p>
-      </div>
-    </section>
-
-    <!-- ── Code examples ────────────────────────────────────────────── -->
-    <section class="bg-white border-y border-slate-200 py-14 px-4 sm:px-6 lg:px-8">
-      <div class="max-w-5xl mx-auto">
-        <h2 class="text-2xl font-bold text-slate-900 mb-2">ODCS contract examples</h2>
-        <p class="text-slate-500 mb-8 text-sm">Copy these examples directly into the validator above to see them in action.</p>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-          <!-- Minimal contract -->
-          <div>
-            <h3 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
-              Minimal valid ODCS v3.1.0 contract (YAML)
-            </h3>
-            <pre class="bg-slate-900 text-slate-100 rounded-xl p-4 text-xs font-mono overflow-auto leading-relaxed"><code>apiVersion: v3.1.0
-kind: DataContract
-id: 53581432-6c55-4ba2-a65f-72344a91553a
-name: orders_v1
-version: 1.0.0
-status: active</code></pre>
-            <p class="text-xs text-slate-500 mt-2">The five fields marked Required below are the only mandatory ones. All others are optional.</p>
-          </div>
-
-          <!-- Contract with schema -->
-          <div>
-            <h3 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-indigo-500 inline-block"></span>
-              Contract with schema and data quality (YAML)
-            </h3>
-            <pre class="bg-slate-900 text-slate-100 rounded-xl p-4 text-xs font-mono overflow-auto leading-relaxed"><code>apiVersion: v3.1.0
-kind: DataContract
-id: abc123-def456
-version: 2.0.0
-status: active
-schema:
-  - id: orders_tbl
-    name: orders
-    physicalType: table
-    properties:
-      - id: order_id_prop
-        name: order_id
-        primaryKey: true
-        primaryKeyPosition: 1
-        logicalType: string
-        physicalType: varchar(36)
-        required: true
-        quality:
-          - metric: nullValues
-            mustBe: 0</code></pre>
-          </div>
-
-          <!-- JSON example -->
-          <div>
-            <h3 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
-              Minimal valid contract (JSON)
-            </h3>
-            <pre class="bg-slate-900 text-slate-100 rounded-xl p-4 text-xs font-mono overflow-auto leading-relaxed"><code>&#123;
-  "apiVersion": "v3.1.0",
-  "kind": "DataContract",
-  "id": "53581432-6c55-4ba2-a65f-72344a91553a",
-  "version": "1.0.0",
-  "status": "active"
-&#125;</code></pre>
-          </div>
-
-          <!-- Common error example -->
-          <div>
-            <h3 class="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-red-500 inline-block"></span>
-              Common error: unknown top-level field
-            </h3>
-            <pre class="bg-slate-900 text-slate-100 rounded-xl p-4 text-xs font-mono overflow-auto leading-relaxed"><code>apiVersion: v3.1.0
-kind: DataContract
-id: my-contract
-version: 1.0.0
-status: active
-# ❌ This will fail — ODCS v3.1.0 does not
-# allow unknown top-level fields.
-# Move it to customProperties instead.
-myCustomField: some-value</code></pre>
-            <p class="text-xs text-slate-500 mt-2">Fix: move to <code class="font-mono bg-slate-100 px-1 rounded text-xs">customProperties: [{'{'}property: myCustomField, value: some-value{'}'}]</code></p>
-          </div>
-
-        </div>
-      </div>
     </section>
 
     <!-- ── Required fields reference ────────────────────────────────── -->
@@ -396,11 +249,7 @@ myCustomField: some-value</code></pre>
   <footer class="bg-white border-t border-slate-200 py-8 px-4 sm:px-6 lg:px-8">
     <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
       <div class="flex items-center gap-2">
-        <div class="w-5 h-5 rounded bg-indigo-600 flex items-center justify-center">
-          <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-        </div>
+        <img src="/favicon.svg" alt="ODCS Validator" class="w-5 h-5 rounded" width="20" height="20" />
         <span class="font-medium text-slate-700">ODCS Validator</span>
       </div>
       <p class="text-center">
