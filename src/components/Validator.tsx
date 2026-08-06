@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import { parseContract, extractApiVersion, detectFormat, needsPrettyPrint, prettyContract } from '../lib/parse';
+import { repairYamlWhitespace } from '../lib/yamlRepair';
 import { validateContract, type ValidationResult } from '../lib/validate';
 import ContractEditor, { type ContractEditorHandle } from './ContractEditor';
 
@@ -220,6 +221,18 @@ export default function Validator() {
     editorRef.current?.focus();
   };
 
+  const handleFixYamlWhitespace = () => {
+    const { text, changed } = repairYamlWhitespace(input);
+    if (!changed) {
+      // Still trigger validation so the user gets feedback; tip stays on panel
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      runValidation(input);
+      return;
+    }
+    setInput(text);
+    editorRef.current?.focus();
+  };
+
   const PANEL_HEIGHT = 'h-72 md:h-full md:min-h-[12rem]';
 
   return (
@@ -239,6 +252,16 @@ export default function Validator() {
             </div>
             <div className="flex items-center gap-2">
               <ExamplesDropdown onSelect={handleLoadExample} />
+              {uiState.kind === 'parsing-error' && uiState.format === 'yaml' && (
+                <button
+                  type="button"
+                  onClick={handleFixYamlWhitespace}
+                  className="text-xs px-3 py-1.5 rounded-lg border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100 transition-colors font-medium"
+                  title="Normalize tabs, trailing spaces, and line endings"
+                >
+                  Fix whitespace
+                </button>
+              )}
               <button
                 onClick={handleCopy}
                 disabled={!input}
@@ -275,7 +298,7 @@ export default function Validator() {
         <div className="flex flex-col gap-2 min-h-0 md:h-full">
           <span className="text-sm font-semibold text-slate-700 shrink-0">Validation Results</span>
           <div className={`flex-1 min-h-0 ${PANEL_HEIGHT}`}>
-            <ResultsPanel state={uiState} />
+            <ResultsPanel state={uiState} onFixYamlWhitespace={handleFixYamlWhitespace} />
           </div>
         </div>
       </div>
@@ -331,7 +354,13 @@ function ExamplesDropdown({ onSelect }: { onSelect: (val: string) => void }) {
   );
 }
 
-function ResultsPanel({ state }: { state: UIState }) {
+function ResultsPanel({
+  state,
+  onFixYamlWhitespace,
+}: {
+  state: UIState;
+  onFixYamlWhitespace: () => void;
+}) {
   const panelClass = 'h-full min-h-[12rem] rounded-xl overflow-auto';
 
   if (state.kind === 'empty') {
@@ -346,14 +375,30 @@ function ResultsPanel({ state }: { state: UIState }) {
   }
 
   if (state.kind === 'parsing-error') {
+    const isYaml = state.format === 'yaml';
     return (
       <div className={`${panelClass} border border-amber-200 bg-amber-50 p-5`}>
         <div className="flex items-start gap-3">
           <span className="text-amber-500 text-xl mt-0.5 shrink-0">⚠</span>
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="font-semibold text-amber-800 text-sm">Syntax Error</p>
             <p className="text-amber-700 text-sm mt-1">Could not parse as {state.format !== 'unknown' ? state.format.toUpperCase() : 'YAML or JSON'}.</p>
             <pre className="mt-3 text-xs font-mono text-amber-800 bg-amber-100 rounded-lg p-3 whitespace-pre-wrap break-all">{state.message}</pre>
+            {isYaml && (
+              <div className="mt-4 space-y-2">
+                <button
+                  type="button"
+                  onClick={onFixYamlWhitespace}
+                  className="text-xs px-3 py-1.5 rounded-lg border border-amber-300 bg-white text-amber-900 hover:bg-amber-100 transition-colors font-medium"
+                >
+                  Normalize YAML whitespace
+                </button>
+                <p className="text-xs text-amber-700 leading-relaxed">
+                  Normalizes tabs, trailing spaces, line endings, and inconsistent indent under the same key (e.g. 3 vs 2 spaces). Does not change ODCS fields or invent missing keys.
+                  If it still fails, check nesting under <code className="font-mono bg-amber-100 px-1 rounded">schema</code> / <code className="font-mono bg-amber-100 px-1 rounded">properties</code>.
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
