@@ -11,9 +11,8 @@ export default defineConfig({
     react(),
     sitemap(),
     indexnow({
-      host: 'https://odcs-validator.com',
-      key: '92d80210d05a43389115b51dc03baef0',
-      keyLocation: 'https://odcs-validator.com',
+      host: 'odcs-validator.com',
+      key: '92d80210d05a43389115b51dc03baef0'
     })
   ],
   vite: {
